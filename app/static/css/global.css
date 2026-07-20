@@ -124,3 +124,39 @@ body{
     color:white;
 
 }
+.top-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:35px;
+}
+
+.top-actions{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.notification{
+    width:42px;
+    height:42px;
+    background:#fff;
+    border-radius:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+    cursor:pointer;
+}
+
+.notification i{
+    font-size:18px;
+}
+
+.user-photo{
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid #2F80ED;
+}

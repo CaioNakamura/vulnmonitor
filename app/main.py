@@ -1,22 +1,19 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+
+from app.routers.dashboard import router as dashboard_router
+from app.routers.ativos import router as ativos_router
 
 app = FastAPI(
     title="VulnMonitor",
     version="1.0.0"
 )
 
-# Arquivos estáticos
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+app.mount(
+    "/static",
+    StaticFiles(directory="app/static"),
+    name="static"
+)
 
-# Templates
-templates = Jinja2Templates(directory="app/templates")
-
-
-@app.get("/")
-def home(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="dashboard/dashboard.html"
-    )
+app.include_router(dashboard_router)
+app.include_router(ativos_router)

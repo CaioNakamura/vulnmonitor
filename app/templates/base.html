@@ -37,56 +37,36 @@
 <body>
 
 <div class="layout">
-
-    <!-- SIDEBAR -->
-
     <aside class="sidebar">
-
         <div class="logo">
-
-            <!-- Pode deixar sem imagem por enquanto -->
-
-            <!--
-            <img src="/static/img/logo.png" alt="Logo">
-            -->
-
+            <img src="/static/img/logo.jpg" alt="Logo">
             <h2>VulnMonitor</h2>
-
         </div>
 
         <nav>
-
             <a href="#" class="active">
                 <i class="fa-solid fa-chart-line"></i>
                 Dashboard
             </a>
-
-            <a href="#">
+            <a href="/ativos">
                 <i class="fa-solid fa-server"></i>
                 Ativos
             </a>
-
             <a href="#">
                 <i class="fa-solid fa-bug"></i>
                 Vulnerabilidades
             </a>
-
             <a href="#">
                 <i class="fa-solid fa-file-lines"></i>
                 Relatórios
             </a>
-
             <a href="#">
                 <i class="fa-solid fa-gear"></i>
                 Configurações
             </a>
-
         </nav>
-
     </aside>
-
-    <!-- CONTEÚDO -->
-
+    
     <main class="content">
 
         {% block content %}

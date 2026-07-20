@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h1 class="fw-bold">
+            Ativos
+        </h1>
+
+        <p class="text-secondary">
+
+            Gerencie todos os ativos cadastrados no sistema.
+
+        </p>
+
+    </div>
+
+    <button class="btn btn-primary">
+
+        <i class="fa-solid fa-plus"></i>
+
+        Novo Ativo
+
+    </button>
+
+</div>
+
+<div class="card-vuln">
+
+    <table class="table table-hover">
+
+        <thead>
+
+            <tr>
+
+                <th>Nome</th>
+
+                <th>Fabricante</th>
+
+                <th>Produto</th>
+
+                <th>Versão</th>
+
+                <th>Ações</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td colspan="5" class="text-center">
+
+                    Nenhum ativo cadastrado.
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
