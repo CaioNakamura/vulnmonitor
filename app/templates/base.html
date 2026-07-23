@@ -44,11 +44,13 @@
         </div>
 
         <nav>
-            <a href="#" class="active">
+            <a href="/"
+            class="{% if pagina == 'dashboard' %}active{% endif %}">
                 <i class="fa-solid fa-chart-line"></i>
                 Dashboard
             </a>
-            <a href="/ativos">
+            <a href="/ativos"
+            class="{% if pagina == 'ativos' %}active{% endif %}">
                 <i class="fa-solid fa-server"></i>
                 Ativos
             </a>
@@ -78,8 +80,9 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/static/js/dashboard.js"></script>
+<script src="/static/js/ativos.js"></script>
 
 </body>
 

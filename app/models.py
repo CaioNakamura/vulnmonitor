@@ -6,12 +6,8 @@ from app.database import Base
 class Ativo(Base):
     __tablename__ = "ativos"
 
-    id = Column(Integer, primary_key=True, index=True)
-
-    nome = Column(String, nullable=False)
-
+    id = Column(Integer, primary_key=True)
+    nome = Column(String)
     fabricante = Column(String)
-
     produto = Column(String)
-
     versao = Column(String)

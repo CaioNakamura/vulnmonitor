@@ -11,8 +11,10 @@ templates = Jinja2Templates(directory="app/templates")
 async def dashboard(request: Request):
 
     return templates.TemplateResponse(
-        "dashboard/dashboard.html",
-        {
-            "request": request
-        }
-    )
+    request=request,
+    name="dashboard/dashboard.html",
+    context={
+        "pagina": "dashboard"
+    }
+)
+
