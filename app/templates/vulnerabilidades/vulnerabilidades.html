@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mb-4">
+
+    <a href="/ativos" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i>
+        Voltar
+    </a>
+
+</div>
+
+<div class="mb-4">
+
+    <h1 class="fw-bold">
+        Vulnerabilidades
+    </h1>
+
+    <p class="text-secondary">
+        Vulnerabilidades encontradas para este ativo.
+    </p>
+
+</div>
+
+<div class="card-vuln mb-4">
+
+    <div class="row">
+
+        <div class="col-md-3">
+            <strong>Nome</strong><br>
+            {{ ativo.nome }}
+        </div>
+
+        <div class="col-md-3">
+            <strong>Fabricante</strong><br>
+            {{ ativo.fabricante }}
+        </div>
+
+        <div class="col-md-3">
+            <strong>Produto</strong><br>
+            {{ ativo.produto }}
+        </div>
+
+        <div class="col-md-3">
+            <strong>Versão</strong><br>
+            {{ ativo.versao }}
+        </div>
+
+    </div>
+
+</div>
+
+{% if vulnerabilidades %}
+
+    {% for item in vulnerabilidades %}
+
+    <div class="card-vuln mb-3">
+
+        <h4>
+
+            {{ item.id }}
+
+        </h4>
+
+        <p>
+
+            {{ item.descricao }}
+
+        </p>
+
+        <div class="row">
+
+            <div class="col-md-3">
+
+                <strong>CVSS</strong><br>
+
+                {{ item.cvss }}
+
+            </div>
+
+            <div class="col-md-3">
+
+                <strong>Severidade</strong><br>
+
+                {{ item.severidade }}
+
+            </div>
+
+            <div class="col-md-3">
+
+                <strong>Publicado</strong><br>
+
+                {{ item.publicado }}
+
+            </div>
+
+            <div class="col-md-3">
+
+                <a
+                    href="{{ item.url }}"
+                    target="_blank"
+                    class="btn btn-primary">
+
+                    Ver na NVD
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+{% else %}
+
+<div class="alert alert-success">
+
+    <i class="fa-solid fa-circle-check"></i>
+
+    Nenhuma vulnerabilidade encontrada para este ativo.
+
+</div>
+
+{% endif %}
+
+{% endblock %}

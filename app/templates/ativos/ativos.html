@@ -53,6 +53,11 @@
                         onclick="return confirm('Deseja realmente excluir este ativo?')">
                         <i class="fa-solid fa-trash"></i>
                     </a>
+                    <a
+                        href="/vulnerabilidades/{{ ativo.id }}"
+                        class="btn btn-info btn-sm">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </a>
                 </td>
             </tr>
             {% endfor %}

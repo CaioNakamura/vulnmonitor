@@ -3,6 +3,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.routers.dashboard import router as dashboard_router
 from app.routers.ativos import router as ativos_router
+from app.routers.vulnerabilidades import router as vulnerabilidades_router
 
 app = FastAPI(
     title="VulnMonitor",
@@ -17,3 +18,4 @@ app.mount(
 
 app.include_router(dashboard_router)
 app.include_router(ativos_router)
+app.include_router(vulnerabilidades_router)
