@@ -55,3 +55,5 @@ def excluir_ativo(db: Session, id: int):
     if ativo:
         db.delete(ativo)
         db.commit()
+def contar_ativos(db):
+    return db.query(Ativo).count()
