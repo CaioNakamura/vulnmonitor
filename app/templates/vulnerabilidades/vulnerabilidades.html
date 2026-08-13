@@ -1,136 +1,192 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="mb-4">
+
     <a href="/ativos" class="btn btn-secondary">
         <i class="fa-solid fa-arrow-left"></i>
         Voltar
     </a>
+
+    <a href="/vulnerabilidades/{{ ativo.id }}/csv"
+   class="btn btn-success ms-2">
+    <i class="fa-solid fa-file-csv"></i>
+    Exportar CSV
+</a>
 </div>
 
 <div class="mb-4">
-    <h1 class="fw-bold mb-1">Vulnerabilidades</h1>
-    <p class="text-secondary mb-0">
+
+    <h1 class="fw-bold">
+        Vulnerabilidades
+    </h1>
+
+    <p class="text-secondary">
         Vulnerabilidades encontradas para este ativo.
     </p>
 </div>
 
-<div class="card-vuln mb-4 p-4">
-    <div class="row g-3">
+<div class="alert alert-warning small">
+    <strong>Observação:</strong>
+    Os resultados são obtidos automaticamente da API pública da NVD e podem conter
+    vulnerabilidades relacionadas a componentes compatíveis do produto pesquisado.
+</div>
 
-```
-    <div class="col-md-3">
-        <small class="text-secondary d-block">Nome</small>
-        <strong>{{ ativo.nome }}</strong>
-    </div>
+<div class="card-vuln mb-4 p-4 shadow-sm border bg-white rounded-4">
 
-    <div class="col-md-3">
-        <small class="text-secondary d-block">Fabricante</small>
-        <strong>{{ ativo.fabricante }}</strong>
-    </div>
+    <div class="row">
 
-    <div class="col-md-3">
-        <small class="text-secondary d-block">Produto</small>
-        <strong>{{ ativo.produto }}</strong>
-    </div>
+        <div class="col-md-3 mb-3 mb-md-0">
+            <strong>Nome</strong><br>
+            {{ ativo.nome }}
+        </div>
 
-    <div class="col-md-3">
-        <small class="text-secondary d-block">Versão</small>
-        <strong>{{ ativo.versao }}</strong>
+        <div class="col-md-3 mb-3 mb-md-0">
+            <strong>Produto</strong><br>
+            {{ ativo.produto }}
+        </div>
+
+        <div class="col-md-3">
+            <strong>Versão</strong><br>
+            {{ ativo.versao }}
+        </div>
+
     </div>
 
 </div>
-```
 
-</div>
+<div class="row g-3 mb-4">
 
-<div class="mb-3">
-    <span class="badge bg-primary fs-6">
-        {{ vulnerabilidades|length }} vulnerabilidades encontradas
-    </span>
+    <div class="col-md-3">
+        <div class="card-vuln text-center p-4 border border-danger-subtle bg-danger-subtle rounded-4 h-100">
+            <i class="fa-solid fa-shield-halved text-danger mb-2"
+               style="font-size: 1.8rem;"></i>
+            <h2 class="fw-bold text-danger mb-1">
+                {{ resumo.CRITICAL }}
+            </h2>
+            <p class="mb-0 fw-semibold text-danger-emphasis">
+                Críticas
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card-vuln text-center p-4 border border-warning-subtle bg-warning-subtle rounded-4 h-100">
+            <i class="fa-solid fa-triangle-exclamation text-warning mb-2"
+               style="font-size: 1.8rem;"></i>
+            <h2 class="fw-bold text-warning mb-1">
+                {{ resumo.HIGH }}
+            </h2>
+            <p class="mb-0 fw-semibold text-warning-emphasis">
+                Altas
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card-vuln text-center p-4 border border-secondary-subtle bg-light rounded-4 h-100">
+            <i class="fa-solid fa-circle-info text-secondary mb-2"
+               style="font-size: 1.8rem;"></i>
+            <h2 class="fw-bold text-secondary mb-1">
+                {{ resumo.MEDIUM }}
+            </h2>
+            <p class="mb-0 fw-semibold text-secondary-emphasis">
+                Médias
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card-vuln text-center p-4 border border-success-subtle bg-success-subtle rounded-4 h-100">
+            <i class="fa-solid fa-circle-check text-success mb-2"
+               style="font-size: 1.8rem;"></i>
+            <h2 class="fw-bold text-success mb-1">
+                {{ resumo.LOW }}
+            </h2>
+            <p class="mb-0 fw-semibold text-success-emphasis">
+                Baixas
+            </p>
+        </div>
+    </div>
+
 </div>
 
 {% if vulnerabilidades %}
 
-```
-{% for item in vulnerabilidades %}
+    {% for item in vulnerabilidades %}
 
-<div class="card-vuln mb-4 p-4 shadow-sm">
+    <div class="card-vuln mb-3 p-4 shadow-sm border bg-white rounded-4">
 
-    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
 
-        <div>
-            <h3 class="mb-1 fw-bold">{{ item.id }}</h3>
-            <p class="text-secondary mb-0">
-                Vulnerabilidade identificada na NVD.
-            </p>
+            <div>
+                <h4 class="fw-bold mb-1">
+                    {{ item.id }}
+                </h4>
+
+                <span class="badge
+                    {% if item.severidade == 'CRITICAL' %}
+                        bg-danger
+                    {% elif item.severidade == 'HIGH' %}
+                        bg-warning text-dark
+                    {% elif item.severidade == 'MEDIUM' %}
+                        bg-secondary
+                    {% elif item.severidade == 'LOW' %}
+                        bg-success
+                    {% else %}
+                        bg-dark
+                    {% endif %}
+                ">
+                    {{ item.severidade }}
+                </span>
+            </div>
+
+            <div class="text-end">
+                <small class="text-secondary d-block">CVSS</small>
+                <span class="fw-bold fs-5">{{ item.cvss }}</span>
+            </div>
+
         </div>
 
-        {% set sev = item.severidade|upper %}
+        <p class="text-dark mb-3">
+            {{ item.descricao }}
+        </p>
 
-        {% if sev == 'CRITICAL' %}
-            <span class="badge bg-danger fs-6">CRITICAL</span>
-        {% elif sev == 'HIGH' %}
-            <span class="badge bg-warning text-dark fs-6">HIGH</span>
-        {% elif sev == 'MEDIUM' %}
-            <span class="badge bg-info text-dark fs-6">MEDIUM</span>
-        {% else %}
-            <span class="badge bg-success fs-6">LOW</span>
-        {% endif %}
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+            <div>
+                <small class="text-secondary d-block">Publicado</small>
+                <strong>{{ item.publicado }}</strong>
+            </div>
+
+            <a
+                href="{{ item.url }}"
+                target="_blank"
+                class="btn btn-primary">
+
+                <i class="fa-solid fa-up-right-from-square me-2"></i>
+                Ver na NVD
+
+            </a>
+
+        </div>
 
     </div>
 
-    <p class="mb-4" style="line-height: 1.7;">
-        {{ item.descricao }}
-    </p>
-
-    <div class="row text-center g-3 mb-3">
-
-        <div class="col-md-4">
-            <div class="border rounded p-3 h-100">
-                <div class="text-secondary small mb-1">CVSS</div>
-                <div class="fw-bold fs-4">{{ item.cvss }}</div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="border rounded p-3 h-100">
-                <div class="text-secondary small mb-1">Severidade</div>
-                <div class="fw-bold fs-5">{{ item.severidade }}</div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="border rounded p-3 h-100">
-                <div class="text-secondary small mb-1">Publicado</div>
-                <div class="fw-bold fs-6">{{ item.publicado }}</div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="text-end">
-        <a href="{{ item.url }}"
-           target="_blank"
-           class="btn btn-primary">
-            <i class="fa-solid fa-arrow-up-right-from-square me-1"></i>
-            Abrir na NVD
-        </a>
-    </div>
-
-</div>
-
-{% endfor %}
-```
+    {% endfor %}
 
 {% else %}
 
 <div class="alert alert-success d-flex align-items-center gap-2">
-    <i class="fa-solid fa-circle-check"></i>
+
+    <i class="fa-solid fa-circle-check fs-5"></i>
+
     <div>
-        Nenhuma vulnerabilidade encontrada para este ativo.
+        <strong>Nenhuma vulnerabilidade encontrada</strong><br>
+        Não foram identificadas vulnerabilidades para este ativo na consulta realizada.
     </div>
+
 </div>
 
 {% endif %}

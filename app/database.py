@@ -1,7 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
+from pathlib import Path
 
-DATABASE_URL = "sqlite:///vulnmonitor.db"
+DATABASE_URL = "sqlite:///./vulnmonitor.db"
+
+print("BANCO ABSOLUTO:", Path("vulnmonitor.db").resolve())
 
 engine = create_engine(
     DATABASE_URL,
@@ -15,6 +18,7 @@ SessionLocal = sessionmaker(
 )
 
 Base = declarative_base()
+
 
 def get_db():
     db = SessionLocal()

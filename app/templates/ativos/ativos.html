@@ -1,236 +1,286 @@
 {% extends "base.html" %}
+
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="fw-bold">Ativos</h1>
-        <p class="text-secondary">
-            Gerencie todos os ativos cadastrados no sistema.
-        </p>
+<div class="d-flex justify-content-between align-items-center mb-4"><div>
+    <h1 class="fw-bold">Ativos</h1>
+    <p class="text-secondary">
+        Gerencie todos os ativos cadastrados no sistema.
+    </p>
+</div>
+
+<button
+    class="btn btn-primary"
+    data-bs-toggle="modal"
+    data-bs-target="#modalNovoAtivo">
+
+    <i class="fa-solid fa-plus"></i>
+    Novo Ativo
+
+</button>
+
+</div><div class="card-vuln p-3 shadow-sm rounded-4 bg-white"><table class="table table-hover align-middle mb-0">
+
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Produto</th>
+            <th>Versão</th>
+            <th width="160">Ações</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+    {% if ativos %}
+
+        {% for ativo in ativos %}
+
+        <tr>
+
+            <td>{{ ativo.nome }}</td>
+            <td>{{ ativo.produto }}</td>
+            <td>{{ ativo.versao }}</td>
+
+            <td class="d-flex gap-1">
+
+                <button
+                    class="btn btn-warning btn-sm btn-editar"
+                    data-id="{{ ativo.id }}"
+                    data-nome="{{ ativo.nome }}"
+                    data-produto="{{ ativo.produto }}"
+                    data-versao="{{ ativo.versao }}"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalEditar">
+
+                    <i class="fa-solid fa-pen"></i>
+
+                </button>
+
+                <a
+                    href="/ativos/excluir/{{ ativo.id }}"
+                    class="btn btn-danger btn-sm"
+                    onclick="return confirm('Deseja realmente excluir este ativo?')">
+
+                    <i class="fa-solid fa-trash"></i>
+
+                </a>
+
+                <a
+                    href="/vulnerabilidades/{{ ativo.id }}"
+                    class="btn btn-info btn-sm">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    {% else %}
+
+        <tr>
+
+            <td colspan="5" class="text-center py-4 text-secondary">
+                Nenhum ativo cadastrado.
+            </td>
+
+        </tr>
+
+    {% endif %}
+
+    </tbody>
+
+</table>
+
+</div><!-- Modal Novo Ativo --><div class="modal fade" id="modalNovoAtivo" tabindex="-1"><div class="modal-dialog">
+
+    <div class="modal-content">
+
+        <form action="/ativos/novo" method="post">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">Novo Ativo</h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <div class="mb-3">
+
+                    <label class="form-label">Nome</label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="nome"
+                        required>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">Produto</label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="produto"
+                        required>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">Versão</label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="versao"
+                        required>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+                    Salvar
+                </button>
+
+            </div>
+
+        </form>
+
     </div>
-    <button
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#modalNovoAtivo">
-        <i class="fa-solid fa-plus"></i>
-        Novo Ativo
-    </button>
+
 </div>
-<div class="card-vuln">
-    <table class="table table-hover align-middle">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Fabricante</th>
-                <th>Produto</th>
-                <th>Versão</th>
-                <th width="120">Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% if ativos %}
-            {% for ativo in ativos %}
-            <tr>
-                <td>{{ ativo.nome }}</td>
-                <td>{{ ativo.fabricante }}</td>
-                <td>{{ ativo.produto }}</td>
-                <td>{{ ativo.versao }}</td>
-                <td>
-                    <button
-                        class="btn btn-warning btn-sm btn-editar"
-                        data-id="{{ ativo.id }}"
-                        data-nome="{{ ativo.nome }}"
-                        data-fabricante="{{ ativo.fabricante }}"
-                        data-produto="{{ ativo.produto }}"
-                        data-versao="{{ ativo.versao }}"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalEditar">
-                        <i class="fa-solid fa-pen"></i>
-                    </button>
-                    <a
-                        href="/ativos/excluir/{{ ativo.id }}"
-                        class="btn btn-danger btn-sm"
-                        onclick="return confirm('Deseja realmente excluir este ativo?')">
-                        <i class="fa-solid fa-trash"></i>
-                    </a>
-                    <a
-                        href="/vulnerabilidades/{{ ativo.id }}"
-                        class="btn btn-info btn-sm">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5" class="text-center py-4">
-                    Nenhum ativo cadastrado.
-                </td>
-            </tr>
-        {% endif %}
-        </tbody>
-    </table>
-</div>
-<!-- Modal Novo Ativo -->
-<div
-    class="modal fade"
-    id="modalNovoAtivo"
-    tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form
-                action="/ativos/novo"
-                method="POST">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        Novo Ativo
-                    </h5>
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal">
-                    </button>
+
+</div><!-- Modal Editar Ativo --><div class="modal fade" id="modalEditar" tabindex="-1"><div class="modal-dialog">
+
+    <div class="modal-content">
+
+        <form id="formEditar" method="post">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">Editar Ativo</h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <div class="mb-3">
+
+                    <label class="form-label">Nome</label>
+
+                    <input
+                        type="text"
+                        id="editarNome"
+                        name="nome"
+                        class="form-control"
+                        required>
+
                 </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Nome
-                        </label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            name="nome"
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Fabricante
-                        </label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            name="fabricante"
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Produto
-                        </label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            name="produto"
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Versão
-                        </label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            name="versao"
-                            required>
-                    </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">Produto</label>
+
+                    <input
+                        type="text"
+                        id="editarProduto"
+                        name="produto"
+                        class="form-control"
+                        required>
+
                 </div>
-                <div class="modal-footer">
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal">
-                        Cancelar
-                    </button>
-                    <button
-                        type="submit"
-                        class="btn btn-primary">
-                        Salvar
-                    </button>
+
+                <div class="mb-3">
+
+                    <label class="form-label">Versão</label>
+
+                    <input
+                        type="text"
+                        id="editarVersao"
+                        name="versao"
+                        class="form-control"
+                        required>
+
                 </div>
-            </form>
-        </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn btn-warning">
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Salvar Alterações
+
+                </button>
+
+            </div>
+
+        </form>
+
     </div>
+
 </div>
-<div
-    class="modal fade"
-    id="modalEditar"
-    tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form
-                id="formEditar"
-                method="POST">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        Editar Ativo
-                    </h5>
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal">
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Nome
-                        </label>
-                        <input
-                            type="text"
-                            id="editarNome"
-                            name="nome"
-                            class="form-control"
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Fabricante
-                        </label>
-                        <input
-                            type="text"
-                            id="editarFabricante"
-                            name="fabricante"
-                            class="form-control"
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Produto
-                        </label>
-                        <input
-                            type="text"
-                            id="editarProduto"
-                            name="produto"
-                            class="form-control"
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Versão
-                        </label>
-                        <input
-                            type="text"
-                            id="editarVersao"
-                            name="versao"
-                            class="form-control"
-                            required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal">
-                        Cancelar
-                    </button>
-                    <button
-                        type="submit"
-                        class="btn btn-warning">
-                        <i class="fa-solid fa-floppy-disk"></i>
-                        Salvar Alterações
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+
+</div><script>
+
+document.querySelectorAll('.btn-editar').forEach(function(botao){
+
+    botao.addEventListener('click', function(){
+
+        const id = this.dataset.id;
+
+        document.getElementById('editarNome').value = this.dataset.nome;
+        document.getElementById('editarProduto').value = this.dataset.produto;
+        document.getElementById('editarVersao').value = this.dataset.versao;
+
+        document.getElementById('formEditar').action = '/ativos/editar/' + id;
+
+    });
+
+});
+
+</script>
 {% endblock %}

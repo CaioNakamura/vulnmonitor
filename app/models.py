@@ -8,6 +8,5 @@ class Ativo(Base):
 
     id = Column(Integer, primary_key=True)
     nome = Column(String)
-    fabricante = Column(String)
     produto = Column(String)
     versao = Column(String)

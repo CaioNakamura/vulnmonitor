@@ -1,71 +1,56 @@
+from sqlalchemy.orm import Session
+from app.models import Vulnerabilidade
 from app.services.nvd_service import consultar_vulnerabilidades
 
 
 def buscar_vulnerabilidades(ativo):
-
-    resposta = consultar_vulnerabilidades(
-        ativo.fabricante,
+    """
+    Consulta vulnerabilidades na NVD para um ativo.
+    """
+    return consultar_vulnerabilidades(
         ativo.produto,
         ativo.versao
     )
 
-    if not resposta:
-        return []
 
-    lista = []
+def salvar_vulnerabilidades(
+    db: Session,
+    ativo_id: int,
+    vulnerabilidades: list
+):
+    """
+    Salva vulnerabilidades no banco evitando duplicados.
+    """
 
-    for item in resposta.get("vulnerabilities", []):
+    salvas = 0
 
-        cve = item.get("cve", {})
+    for item in vulnerabilidades:
 
-        descricao = ""
+        existente = (
+            db.query(Vulnerabilidade)
+            .filter(
+                Vulnerabilidade.ativo_id == ativo_id,
+                Vulnerabilidade.cve == item["id"]
+            )
+            .first()
+        )
 
-        for d in cve.get("descriptions", []):
+        if existente:
+            continue
 
-            if d["lang"] == "en":
-                descricao = d["value"]
-                break
+        nova = Vulnerabilidade(
+            ativo_id=ativo_id,
+            cve=item["id"],
+            descricao=item["descricao"],
+            severidade=item["severidade"],
+            cvss=item["cvss"],
+            publicado=item["publicado"],
+            url=item["url"]
+        )
 
-        cvss = "-"
-        severidade = "-"
+        db.add(nova)
+        salvas += 1
 
-        metricas = cve.get("metrics", {})
+    db.commit()
 
-        if "cvssMetricV31" in metricas:
-
-            dados = metricas["cvssMetricV31"][0]["cvssData"]
-
-            cvss = dados["baseScore"]
-            severidade = dados["baseSeverity"]
-
-        elif "cvssMetricV30" in metricas:
-
-            dados = metricas["cvssMetricV30"][0]["cvssData"]
-
-            cvss = dados["baseScore"]
-            severidade = dados["baseSeverity"]
-
-        elif "cvssMetricV2" in metricas:
-
-            dados = metricas["cvssMetricV2"][0]["cvssData"]
-
-            cvss = dados["baseScore"]
-            severidade = metricas["cvssMetricV2"][0]["baseSeverity"]
-
-        lista.append({
-
-            "id": cve["id"],
-
-            "descricao": descricao,
-
-            "cvss": cvss,
-
-            "severidade": severidade,
-
-            "publicado": cve["published"][:10],
-
-            "url": f"https://nvd.nist.gov/vuln/detail/{cve['id']}"
-
-        })
-
-    return lista
+    return salvas
