@@ -1,8 +1,9 @@
-const ctx = document.getElementById("grafico");
+const canvas = document.getElementById("grafico");
 
-if (ctx) {
 
-    new Chart(ctx, {
+if (canvas) {
+
+    new Chart(canvas, {
 
         type: "doughnut",
 
@@ -19,7 +20,17 @@ if (ctx) {
 
             datasets: [{
 
-                data: [15, 25, 12, 9],
+                data: [
+
+                    {{ total_baixas | default(0) }},
+
+                    {{ total_medias | default(0) }},
+
+                    {{ total_altas | default(0) }},
+
+                    {{ total_criticas | default(0) }}
+
+                ],
 
                 backgroundColor: [
 
@@ -39,6 +50,8 @@ if (ctx) {
         options: {
 
             responsive: true,
+
+            maintainAspectRatio: true,
 
             plugins: {
 

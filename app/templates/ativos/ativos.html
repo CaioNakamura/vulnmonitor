@@ -26,6 +26,8 @@
             <th>Nome</th>
             <th>Produto</th>
             <th>Versão</th>
+            <th>Build</th>
+            <th>Responsável</th>
             <th width="160">Ações</th>
         </tr>
     </thead>
@@ -41,6 +43,23 @@
             <td>{{ ativo.nome }}</td>
             <td>{{ ativo.produto }}</td>
             <td>{{ ativo.versao }}</td>
+            <td>
+                {% if ativo.build %}
+                    {{ ativo.build }}
+                {% else %}
+                    <span class="text-secondary">—</span>
+                {% endif %}
+            </td>
+
+            <td>
+                {% if ativo.email_responsavel %}
+                    {{ ativo.email_responsavel }}
+                {% else %}
+                    <span class="text-secondary">
+                        Não informado
+                    </span>
+                {% endif %}
+            </td>
 
             <td class="d-flex gap-1">
 

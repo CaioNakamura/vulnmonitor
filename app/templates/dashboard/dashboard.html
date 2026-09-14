@@ -6,7 +6,10 @@
 
     <div>
 
-        <h1 class="fw-bold">Dashboard</h1>
+        <h1 class="fw-bold">
+            Dashboard
+        </h1>
+
         <p class="text-secondary">
             Visão geral do monitoramento de vulnerabilidades.
         </p>
@@ -21,14 +24,24 @@
 
         </button>
 
-        <img src="/static/img/user.png"
-             class="user-photo">
+        <img
+            src="/static/img/user.png"
+            class="user-photo"
+        >
 
     </div>
 
 </div>
 
+
+<!-- =====================================================
+     CARDS
+====================================================== -->
+
 <div class="row g-4">
+
+
+    <!-- TOTAL DE ATIVOS -->
 
     <div class="col-lg-3">
 
@@ -40,15 +53,24 @@
 
             </div>
 
-            <h6>Total de Ativos</h6>
+            <h6>
+                Total de Ativos
+            </h6>
 
-            <h2>158</h2>
+            <h2>
+                {{ total_ativos }}
+            </h2>
 
-            <small>+15 cadastrados</small>
+            <small>
+                Ativos cadastrados
+            </small>
 
         </div>
 
     </div>
+
+
+    <!-- VULNERABILIDADES -->
 
     <div class="col-lg-3">
 
@@ -60,15 +82,24 @@
 
             </div>
 
-            <h6>Vulnerabilidades</h6>
+            <h6>
+                Vulnerabilidades
+            </h6>
 
-            <h2>42</h2>
+            <h2>
+                {{ total_vulnerabilidades }}
+            </h2>
 
-            <small>Encontradas</small>
+            <small>
+                Encontradas nos ativos
+            </small>
 
         </div>
 
     </div>
+
+
+    <!-- CRÍTICAS -->
 
     <div class="col-lg-3">
 
@@ -80,15 +111,24 @@
 
             </div>
 
-            <h6>Críticas</h6>
+            <h6>
+                Críticas
+            </h6>
 
-            <h2>9</h2>
+            <h2>
+                {{ total_criticas }}
+            </h2>
 
-            <small>Prioridade máxima</small>
+            <small>
+                Prioridade máxima
+            </small>
 
         </div>
 
     </div>
+
+
+    <!-- RELATÓRIOS -->
 
     <div class="col-lg-3">
 
@@ -100,11 +140,17 @@
 
             </div>
 
-            <h6>Relatórios</h6>
+            <h6>
+                Relatórios
+            </h6>
 
-            <h2>18</h2>
+            <h2>
+                0
+            </h2>
 
-            <small>Gerados</small>
+            <small>
+                Módulo ainda não implementado
+            </small>
 
         </div>
 
@@ -112,9 +158,18 @@
 
 </div>
 
+
 <br>
 
+
+<!-- =====================================================
+     GRÁFICO + RESUMO
+====================================================== -->
+
 <div class="row">
+
+
+    <!-- GRÁFICO -->
 
     <div class="col-lg-8">
 
@@ -130,15 +185,28 @@
 
             <hr>
 
-            <div style="height:320px">
 
-                <canvas id="grafico"></canvas>
+            <div
+                style="
+                    width: 100%;
+                    max-width: 320px;
+                    margin: 0 auto;
+                    position: relative;
+                "
+            >
+
+                <canvas
+                    id="grafico"
+                ></canvas>
 
             </div>
 
         </div>
 
     </div>
+
+
+    <!-- RESUMO -->
 
     <div class="col-lg-4">
 
@@ -154,13 +222,42 @@
 
             <hr>
 
-            <p>✔ Monitoramento ativo</p>
 
-            <p>✔ NVD sincronizada</p>
+            <p>
 
-            <p>✔ Última consulta: agora</p>
+                ✔ Monitoramento ativo
 
-            <p>✔ Banco de dados online</p>
+            </p>
+
+
+            <p>
+
+                ✔ NVD sincronizada
+
+            </p>
+
+
+            <p>
+
+                {% if ultima_atualizacao %}
+
+                    ✔ Última atualização:
+                    {{ ultima_atualizacao.finalizada_em.strftime("%d/%m/%Y %H:%M") }}
+
+                {% else %}
+
+                    ⚠ Nenhuma atualização registrada
+
+                {% endif %}
+
+            </p>
+
+
+            <p>
+
+                ✔ Banco de dados online
+
+            </p>
 
         </div>
 

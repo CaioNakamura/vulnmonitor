@@ -2,13 +2,21 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 from pathlib import Path
 
+
 DATABASE_URL = "sqlite:///./vulnmonitor.db"
 
-print("BANCO ABSOLUTO:", Path("vulnmonitor.db").resolve())
+
+print(
+    "BANCO ABSOLUTO:",
+    Path("vulnmonitor.db").resolve()
+)
+
 
 engine = create_engine(
     DATABASE_URL,
-    connect_args={"check_same_thread": False}
+    connect_args={
+        "check_same_thread": False
+    }
 )
 
 SessionLocal = sessionmaker(

@@ -1,56 +1,206 @@
+from datetime import datetime
+
 from sqlalchemy.orm import Session
-from app.models import Vulnerabilidade
-from app.services.nvd_service import consultar_vulnerabilidades
+
+from app.models import (
+    AtivoVulnerabilidade,
+    Vulnerabilidade
+)
 
 
-def buscar_vulnerabilidades(ativo):
-    """
-    Consulta vulnerabilidades na NVD para um ativo.
-    """
-    return consultar_vulnerabilidades(
-        ativo.produto,
-        ativo.versao
+# =========================================================
+# BUSCAR VULNERABILIDADES DO ATIVO
+# =========================================================
+
+def buscar_vulnerabilidades(
+    db: Session,
+    ativo_id: int
+):
+
+    registros = (
+        db.query(
+            Vulnerabilidade
+        )
+        .join(
+            AtivoVulnerabilidade,
+            AtivoVulnerabilidade.vulnerabilidade_id
+            == Vulnerabilidade.id
+        )
+        .filter(
+            AtivoVulnerabilidade.ativo_id
+            == ativo_id
+        )
+        .all()
+    )
+
+    vulnerabilidades = []
+
+    for vulnerabilidade in registros:
+
+        vulnerabilidades.append({
+
+            "id":
+                vulnerabilidade.id,
+
+            "cve":
+                vulnerabilidade.cve,
+
+            "descricao":
+                vulnerabilidade.descricao,
+
+            "severidade":
+                vulnerabilidade.severidade,
+
+            "cvss":
+                vulnerabilidade.cvss,
+
+            "publicado":
+                vulnerabilidade.publicado,
+
+            "url":
+                vulnerabilidade.url
+        })
+
+    # -----------------------------------------------------
+    # ORDENA POR PUBLICAÇÃO
+    # -----------------------------------------------------
+
+    def converter_data(item):
+
+        try:
+
+            return datetime.strptime(
+                item.get(
+                    "publicado"
+                ),
+                "%d/%m/%Y"
+            )
+
+        except (
+            ValueError,
+            TypeError
+        ):
+
+            return datetime.min
+
+    vulnerabilidades.sort(
+        key=converter_data,
+        reverse=True
+    )
+
+    return vulnerabilidades
+
+
+# =========================================================
+# LISTAR ORM
+# =========================================================
+
+def listar_vulnerabilidades_ativo(
+    db: Session,
+    ativo_id: int
+):
+
+    resultados = (
+        db.query(
+            Vulnerabilidade
+        )
+        .join(
+            AtivoVulnerabilidade,
+            AtivoVulnerabilidade.vulnerabilidade_id
+            == Vulnerabilidade.id
+        )
+        .filter(
+            AtivoVulnerabilidade.ativo_id
+            == ativo_id
+        )
+        .all()
+    )
+
+    # Ordenação correta por data
+    resultados.sort(
+        key=lambda item: (
+            datetime.strptime(
+                item.publicado,
+                "%d/%m/%Y"
+            )
+            if item.publicado
+            else datetime.min
+        ),
+        reverse=True
+    )
+
+    return resultados
+
+
+# =========================================================
+# CONTAR
+# =========================================================
+
+def contar_vulnerabilidades(
+    db: Session,
+    ativo_id: int
+):
+
+    return (
+        db.query(
+            AtivoVulnerabilidade
+        )
+        .filter(
+            AtivoVulnerabilidade.ativo_id
+            == ativo_id
+        )
+        .count()
     )
 
 
-def salvar_vulnerabilidades(
-    db: Session,
-    ativo_id: int,
-    vulnerabilidades: list
-):
-    """
-    Salva vulnerabilidades no banco evitando duplicados.
-    """
+# =========================================================
+# RESUMO
+# =========================================================
 
-    salvas = 0
+def resumir_vulnerabilidades(
+    vulnerabilidades
+):
+
+    resumo = {
+
+        "CRITICAL": 0,
+        "HIGH": 0,
+        "MEDIUM": 0,
+        "LOW": 0,
+        "UNKNOWN": 0
+    }
 
     for item in vulnerabilidades:
 
-        existente = (
-            db.query(Vulnerabilidade)
-            .filter(
-                Vulnerabilidade.ativo_id == ativo_id,
-                Vulnerabilidade.cve == item["id"]
+        if isinstance(
+            item,
+            dict
+        ):
+
+            severidade = item.get(
+                "severidade",
+                "UNKNOWN"
             )
-            .first()
-        )
 
-        if existente:
-            continue
+        else:
 
-        nova = Vulnerabilidade(
-            ativo_id=ativo_id,
-            cve=item["id"],
-            descricao=item["descricao"],
-            severidade=item["severidade"],
-            cvss=item["cvss"],
-            publicado=item["publicado"],
-            url=item["url"]
-        )
+            severidade = getattr(
+                item,
+                "severidade",
+                "UNKNOWN"
+            )
 
-        db.add(nova)
-        salvas += 1
+        severidade = (
+            severidade
+            or "UNKNOWN"
+        ).upper()
 
-    db.commit()
+        if severidade in resumo:
 
-    return salvas
+            resumo[severidade] += 1
+
+        else:
+
+            resumo["UNKNOWN"] += 1
+
+    return resumo

@@ -1,27 +1,24 @@
 from sqlalchemy.orm import Session
+
 from app.models import Ativo
 
 
-EMPRESA_PADRAO_ID = 1
-
-
 def listar_ativos(db: Session):
-    ativos = db.query(Ativo).all()
-    print("ATIVOS LIDOS:", ativos)
-    return ativos
+    return db.query(Ativo).order_by(Ativo.id).all()
 
 
 def cadastrar_ativo(
     db: Session,
     nome: str,
     produto: str,
-    versao: str
+    versao: str,
+    email_responsavel: str = ""
 ):
     ativo = Ativo(
-        empresa_id=EMPRESA_PADRAO_ID,
         nome=nome,
         produto=produto,
-        versao=versao
+        versao=versao,
+        email_responsavel=email_responsavel.strip() or None
     )
 
     db.add(ativo)
@@ -31,37 +28,47 @@ def cadastrar_ativo(
     return ativo
 
 
-def buscar_ativo(db: Session, id: int):
-    return db.query(Ativo).filter(Ativo.id == id).first()
-
-
 def editar_ativo(
     db: Session,
     id: int,
     nome: str,
     produto: str,
-    versao: str
+    versao: str,
+    email_responsavel: str = ""
 ):
-    ativo = buscar_ativo(db, id)
+    ativo = db.query(Ativo).filter(
+        Ativo.id == id
+    ).first()
 
-    if ativo:
-        ativo.nome = nome
-        ativo.produto = produto
-        ativo.versao = versao
+    if not ativo:
+        return None
 
-        db.commit()
-        db.refresh(ativo)
+    ativo.nome = nome
+    ativo.produto = produto
+    ativo.versao = versao
+    ativo.email_responsavel = (
+        email_responsavel.strip()
+        or None
+    )
+
+    db.commit()
+    db.refresh(ativo)
 
     return ativo
 
 
-def excluir_ativo(db: Session, id: int):
-    ativo = buscar_ativo(db, id)
+def excluir_ativo(
+    db: Session,
+    id: int
+):
+    ativo = db.query(Ativo).filter(
+        Ativo.id == id
+    ).first()
 
-    if ativo:
-        db.delete(ativo)
-        db.commit()
+    if not ativo:
+        return None
 
+    db.delete(ativo)
+    db.commit()
 
-def contar_ativos(db: Session):
-    return db.query(Ativo).count()
+    return True
